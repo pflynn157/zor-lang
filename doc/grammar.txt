@@ -1,0 +1,190 @@
+
+data_type:
+      i8 | u8
+    | i16 | u16
+    | i32 | u32
+    | i64 | u64
+    | char
+    | bool
+    | string
+    ;
+    
+expression_list:
+      expression
+    | expression_list ',' expression
+    ;
+    
+const_expr:
+      INTEGER
+    | HEX_L
+    | TRUE | FALSE
+    | STRING_L
+    | CHAR_L
+    ;
+    
+primary_expr:
+      ID
+    | const_expr
+    ;
+    
+conditional_expr:
+      expression '=' expression
+    | expression '>' expression
+    | expression '<' expression
+    | expression '!=' expression
+    | expression '>=' expression
+    | expression '<=' expression
+    ;
+    
+logical_expr:
+      expression AND expression
+    | expression OR expression
+    ;
+    
+binary_expr:
+      expression '+' expression
+    | expression '-' expression
+    | expression '*' expression
+    | expression '/' expression
+    | expression '%' expression
+    | expression '&' expression
+    | expression '|' expression
+    | expression '^' expression
+    ;
+    
+function_expr:
+      ID '(' ')'
+    | ID '(' expression_list ')'
+    ;
+    
+array_expr: ID '[' expression ']'
+    ;
+    
+struct_expr: ID '.' ID
+    ;
+    
+expression:
+      primary_expr
+    | conditional_expr
+    | logical_expr
+    | binary_expr
+    | function_expr
+    | array_expr
+    | struct_expr
+    ;
+    
+id_list:
+      ID
+    | id_list ',' ID
+    ;
+    
+var_declaration:
+      VAR id_list ':' data_type ASSIGN expression ';'
+    | VAR id_list ':' data_type '[' expression ']' ';'
+    ;
+
+var_assign: ID ASSIGN expression ';'
+    ;
+    
+array_assign: ID '[' expression ']' ASSIGN expression ';'
+    ;
+    
+struct_declaration: STRUCT ID : ID ';'
+    ;
+    
+struct_assign: ID '.' ID ASSIGN expression ';'
+    ;
+    
+constant_declaration: CONST ID ':' data_type ASSIGN const_expr ';'
+    ;
+    
+function_call:
+      ID '(' ')' ';'
+    | ID '(' expression_list ')' ';'
+    ;
+    
+conditional:
+      IF conditional_expr THEN block END
+    | IF conditional_expr THEN block elif_block
+    ;
+    
+elif_block:
+      ELIF conditional_expr THEN block END
+    | ELIF conditional_expr THEN block elif_block
+    | ELSE block END
+    ;
+    
+loop: WHILE conditional_expr DO block END
+    ;
+
+import_list:
+      ID
+    | import_list '.' ID
+    ;
+    
+import: IMPORT import_list ';'
+    ;
+    
+statement:
+      var_declaration
+    | var_assign
+    | array_assign
+    | struct_declaration
+    | struct_assign
+    | constant_declaration
+    | function_call
+    | conditional
+    | loop
+    | import
+    ;
+    
+statement_list:
+      statement
+    | statement_list statement
+    ;
+    
+block: statement_list;
+    
+arg:
+      ID ':' data_type
+    | ID ':' data_type '[' ']'
+    ;
+    
+arg_list:
+      arg
+    | arg_list ',' arg
+    ;
+
+function:
+      FUNC ID IS block END
+    | FUNC ID '(' ')' IS block END
+    | FUNC ID ARROW data_type IS block END
+    | FUNC ID '(' ')' ARROW data_type IS block END
+    | FUNC ID '(' arg_list ')' IS block END
+    | FUNC ID '(' arg_list ')' ARROW data_type IS BLOCK END
+    ;
+    
+struct_item: ID ':' data_type ASSIGN const_expr ';'
+    ;
+    
+struct_block:
+      struct_item
+    | struct_block struct_item
+    ;
+    
+struct: STRUCT ID IS struct_block END
+    ;
+
+global_statement:
+      constant
+    | struct
+    | function
+    ;
+
+global_statement_list:
+      global_statement
+    | global_statement_list global_statement
+    ;
+
+translation_unit : global_statement_list;
+

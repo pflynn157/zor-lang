@@ -1,0 +1,30 @@
+An implementation of Tiny Lang must include these library functions. In the case of compiled languages, a few functions are part of the language itself (the corelib), but others form the base of the normal standard library.
+NOTE: Functions that make up the corelib have a star (*) next to them
+====================================
+
+core (NOTE: These functions are unneccessary if the implementation is interpreted)
+* malloc(i32)
+* free(ptr)
+
+std.io
+* print(string, ...)
+* println(string, ...)
+- readline() -> string
+- readint() -> i32
+
+std.fs
+- fs_open(string, i32) -> i32
+- fs_eof(i32) -> bool
+- fs_get(i32) -> i32
+- fs_writeln(i32, string)
+- fs_write(i32, u8[], i32, i32)
+- fs_close(i32)
+
+std.string
+* stringcmp(string, string) -> i32
+* strcat_str(string, string) -> string
+* strcat_char(string, char) -> string
+
+std.num
+* rand_init()
+* rand_int(i32, i32) -> i32
