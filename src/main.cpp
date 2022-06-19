@@ -17,7 +17,7 @@ bool isError = false;
 
 // TODO: I'm not sure actually if the lex testing actually works
 //
-AstTree *getAstTree(std::string input, bool testLex, bool printAst) {
+AstTree *getAstTree(std::string input, bool testLex, bool printAst, bool emitDot) {
     Parser *frontend = new Parser(input);
     AstTree *tree;
     
@@ -40,6 +40,11 @@ AstTree *getAstTree(std::string input, bool testLex, bool printAst) {
     
     if (printAst) {
         tree->print();
+        return nullptr;
+    }
+    
+    if (emitDot) {
+        tree->dot();
         return nullptr;
     }
     
@@ -87,6 +92,7 @@ int main(int argc, char **argv) {
     bool emitPreproc = false;
     bool testLex = false;
     bool printAst = false;
+    bool emitDot = false;
     bool printLLVM = false;
     bool emitLLVM = false;
     
@@ -99,6 +105,8 @@ int main(int argc, char **argv) {
             testLex = true;
         } else if (arg == "--ast") {
             printAst = true;
+        } else if (arg == "--dot") {
+            emitDot = true;
         } else if (arg == "--llvm") {
             printLLVM = true;
         } else if (arg == "--emit-llvm") {
@@ -119,7 +127,7 @@ int main(int argc, char **argv) {
         return 1;
     }
     
-    AstTree *tree = getAstTree(newInput, testLex, printAst);
+    AstTree *tree = getAstTree(newInput, testLex, printAst, emitDot);
     if (tree == nullptr) {
         if (isError) return 1;
         return 0;

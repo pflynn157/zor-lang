@@ -51,6 +51,7 @@ public:
     }
     
     void print();
+    void dot();
 private:
     std::string file = "";
     std::vector<AstGlobalStatement *> global_statements;

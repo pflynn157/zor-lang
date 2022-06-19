@@ -23,6 +23,8 @@ set(SRC
     ${CMAKE_BINARY_DIR}/src/lex.cpp
     ${CMAKE_BINARY_DIR}/src/lex_debug.cpp
     
+    ast/astdot.cpp
+    
     debug/AstDebug.cpp
     debug/Unparse.cpp
     

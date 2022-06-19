@@ -104,6 +104,7 @@ public:
     std::vector<AstStatement *> getBlock() { return block; }
     
     void print(int indent = 4);
+    std::string dot(std::string parent);
 private:
     std::vector<AstStatement *> block;
 };
@@ -147,6 +148,7 @@ public:
     }
     
     void print();
+    std::string dot(std::string parent);
 private:
     std::string name;
     std::vector<Var> items;

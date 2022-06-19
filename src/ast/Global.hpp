@@ -23,6 +23,7 @@ public:
     AstType getType() { return type; }
     
     virtual void print() {}
+    virtual std::string dot(std::string parent) { return ""; }
 private:
     AstType type = AstType::EmptyAst;
 };
@@ -47,7 +48,9 @@ public:
     std::string getName() { return name; }
     DataType getDataType() { return dataType; }
     std::vector<Var> getArguments() { return args; }
+    
     void print() override;
+    std::string dot(std::string parent) override;
 private:
     std::string name = "";
     std::vector<Var> args;
@@ -88,6 +91,7 @@ public:
     }
     
     void print() override;
+    std::string dot(std::string parent) override;
 private:
     std::string name = "";
     std::vector<Var> args;

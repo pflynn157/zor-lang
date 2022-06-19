@@ -28,7 +28,9 @@ public:
     bool hasExpression() { return expr != nullptr; }
     
     AstType getType() { return type; }
+    
     virtual void print() {}
+    virtual std::string dot(std::string parent) { return ""; }
 private:
     AstExpression *expr = nullptr;
     AstType type = AstType::EmptyAst;
@@ -39,7 +41,6 @@ private:
 class AstExprStatement : public AstStatement {
 public:
     explicit AstExprStatement() : AstStatement(AstType::ExprStmt) {}
-    void print();
     
     void setDataType(DataType dataType, DataType ptrType = DataType::Void) {
         this->dataType = dataType;
@@ -49,6 +50,8 @@ public:
     DataType getDataType() { return dataType; }
     DataType getPtrType() { return ptrType; }
     
+    void print();
+    std::string dot(std::string parent) override;
 private:
     DataType dataType = DataType::Void;
     DataType ptrType = DataType::Void;
@@ -63,6 +66,7 @@ public:
     
     std::string getName() { return name; }
     void print();
+    std::string dot(std::string parent) override;
 private:
     std::string name = "";
 };
@@ -71,7 +75,9 @@ private:
 class AstReturnStmt : public AstStatement {
 public:
     explicit AstReturnStmt() : AstStatement(AstType::Return) {}
+    
     void print();
+    std::string dot(std::string parent) override;
 };
 
 // Represents a variable declaration
@@ -92,6 +98,7 @@ public:
     AstExpression *getPtrSize() { return size; }
     
     void print();
+    std::string dot(std::string parent) override;
 private:
     std::string name = "";
     AstExpression *size = nullptr;
@@ -114,6 +121,7 @@ public:
     bool isNoInit() { return noInit; }
     
     void print();
+    std::string dot(std::string parent) override;
 private:
     std::string varName = "";
     std::string structName = "";
@@ -133,6 +141,7 @@ public:
     std::vector<AstStatement *> getBlock() { return block->getBlock(); }
     
     virtual void print(int indent = 0) {}
+    virtual std::string dot(std::string parent) { return ""; }
 protected:
     AstBlock *block;
 };
@@ -146,6 +155,7 @@ public:
     std::vector<AstStatement *> getBranches() { return branches; }
     
     void print(int indent = 0);
+    std::string dot(std::string parent) override;
 private:
     std::vector<AstStatement *> branches;
 };
@@ -155,6 +165,7 @@ public:
     explicit AstElifStmt() : AstBlockStmt(AstType::Elif) {}
     
     void print(int indent = 0);
+    std::string dot(std::string parent) override;
 };
 
 class AstElseStmt : public AstBlockStmt {
@@ -162,6 +173,7 @@ public:
     explicit AstElseStmt() : AstBlockStmt(AstType::Else) {}
     
     void print(int indent = 0);
+    std::string dot(std::string parent) override;
 };
 
 // Represents a while statement
@@ -170,6 +182,7 @@ public:
     explicit AstWhileStmt() : AstBlockStmt(AstType::While) {}
     
     void print(int indent = 0);
+    std::string dot(std::string parent) override;
 };
 
 // Represents a break statement for a loop
@@ -177,6 +190,7 @@ class AstBreak : public AstStatement {
 public:
     explicit AstBreak() : AstStatement(AstType::Break) {}
     void print();
+    std::string dot(std::string parent) override;
 };
 
 // Represents a continue statement for a loop
@@ -184,5 +198,6 @@ class AstContinue : public AstStatement {
 public:
     explicit AstContinue() : AstStatement(AstType::Continue) {}
     void print();
+    std::string dot(std::string parent) override;
 };
 

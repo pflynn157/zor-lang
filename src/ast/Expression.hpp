@@ -20,7 +20,9 @@ public:
     }
     
     AstType getType() { return type; }
+    
     virtual void print() {}
+    virtual std::string dot(std::string parent) { return ""; }
 protected:
     AstType type = AstType::EmptyAst;
 };
@@ -34,6 +36,7 @@ public:
     std::vector<AstExpression *> getList() { return list; }
     
     void print();
+    std::string dot(std::string parent) override;
 private:
     std::vector<AstExpression *> list;
 };
@@ -44,6 +47,7 @@ public:
     bool isBinaryOp() { return isBinary; }
 
     virtual void print() {}
+    virtual std::string dot(std::string parent) { return ""; }
 protected:
     bool isBinary = true;
 };
@@ -59,6 +63,7 @@ public:
     AstExpression *getVal() { return val; }
     
     virtual void print() {}
+    virtual std::string dot(std::string parent) { return ""; }
 protected:
     AstExpression *val;
 };
@@ -71,6 +76,7 @@ public:
     }
     
     void print();
+    std::string dot(std::string parent) override;
 };
 
 // Represents the base of a binary expression
@@ -85,6 +91,7 @@ public:
     int getPrecedence() { return precedence; }
     
     virtual void print() {}
+    virtual std::string dot(std::string parent) { return ""; }
 protected:
     AstExpression *lval, *rval;
     int precedence = 0;
@@ -106,6 +113,7 @@ public:
     }
     
     void print();
+    std::string dot(std::string parent) override;
 };
 
 // Represents an add operation
@@ -117,6 +125,7 @@ public:
     }
     
     void print();
+    std::string dot(std::string parent) override;
 };
 
 // Represents a subtraction operation
@@ -128,6 +137,7 @@ public:
     }
     
     void print();
+    std::string dot(std::string parent) override;
 };
 
 // Represents a multiplication operation
@@ -139,6 +149,7 @@ public:
     }
     
     void print();
+    std::string dot(std::string parent) override;
 };
 
 // Represents a division operation
@@ -150,6 +161,7 @@ public:
     }
     
     void print();
+    std::string dot(std::string parent) override;
 };
 
 // Represents a division operation
@@ -161,6 +173,7 @@ public:
     }
     
     void print();
+    std::string dot(std::string parent) override;
 };
 
 // Represents an or operation
@@ -172,6 +185,7 @@ public:
     }
     
     void print();
+    std::string dot(std::string parent) override;
 };
 
 // Represents a xor operation
@@ -183,6 +197,7 @@ public:
     }
     
     void print();
+    std::string dot(std::string parent) override;
 };
 
 // Represents an equal-to operation
@@ -194,6 +209,7 @@ public:
     }
     
     void print();
+    std::string dot(std::string parent) override;
 };
 
 // Represents a not-equal-to operation
@@ -205,6 +221,7 @@ public:
     }
     
     void print();
+    std::string dot(std::string parent) override;
 };
 
 // Represents a greater-than operation
@@ -216,6 +233,7 @@ public:
     }
     
     void print();
+    std::string dot(std::string parent) override;
 };
 
 // Represents a less-than operation
@@ -227,6 +245,7 @@ public:
     }
     
     void print();
+    std::string dot(std::string parent) override;
 };
 
 // Represents a greater-than-or-equal operation
@@ -238,6 +257,7 @@ public:
     }
     
     void print();
+    std::string dot(std::string parent) override;
 };
 
 // Represents a less-than-or-equal operation
@@ -249,6 +269,7 @@ public:
     }
     
     void print();
+    std::string dot(std::string parent) override;
 };
 
 // Represents a logical AND operation
@@ -260,6 +281,7 @@ public:
     }
     
     void print();
+    std::string dot(std::string parent) override;
 };
 
 // Represents a logical OR operation
@@ -271,6 +293,7 @@ public:
     }
     
     void print();
+    std::string dot(std::string parent) override;
 };
 
 // Represents a character literal
@@ -282,11 +305,13 @@ public:
     
     char getValue() { return val; }
     void print();
+    std::string dot(std::string parent) override;
 private:
     char val = 0;
 };
 
 // Represents a byte literal
+// TODO: Remove
 class AstI8 : public AstExpression {
 public:
     explicit AstI8(uint8_t val) : AstExpression(AstType::I8L) {
@@ -300,6 +325,7 @@ private:
 };
 
 // Represents a word literal
+// TODO: Remove
 class AstI16 : public AstExpression {
 public:
     explicit AstI16(uint16_t val) : AstExpression(AstType::I16L) {
@@ -313,6 +339,7 @@ private:
 };
 
 // Represents an integer literal
+// TODO: Convert to uint64, rename AstInt
 class AstI32 : public AstExpression {
 public:
     explicit AstI32(uint64_t val) : AstExpression(AstType::I32L) {
@@ -323,11 +350,13 @@ public:
     
     uint64_t getValue() { return val; }
     void print();
+    std::string dot(std::string parent) override;
 private:
     uint64_t val = 0;
 };
 
 // Represents a QWord literal
+// TODO: Remove
 class AstI64 : public AstExpression {
 public:
     explicit AstI64(uint64_t val) : AstExpression(AstType::I64L) {
@@ -349,6 +378,7 @@ public:
     
     std::string getValue() { return val; }
     void print();
+    std::string dot(std::string parent) override;
 private:
     std::string val = "";
 };
@@ -362,6 +392,7 @@ public:
     
     std::string getValue() { return val; }
     void print();
+    std::string dot(std::string parent) override;
 private:
     std::string val = "";
 };
@@ -377,7 +408,9 @@ public:
     
     std::string getValue() { return val; }
     AstExpression *getIndex() { return index; }
+    
     void print();
+    std::string dot(std::string parent) override;
 private:
     std::string val = "";
     AstExpression *index;
@@ -395,6 +428,7 @@ public:
     std::string getMember() { return member; }
 
     void print();
+    std::string dot(std::string parent) override;
 private:
     std::string var = "";
     std::string member = "";
@@ -412,6 +446,7 @@ public:
     std::string getName() { return name; }
     
     void print();
+    std::string dot(std::string parent) override;
 private:
     AstExpression *expr;
     std::string name = "";
