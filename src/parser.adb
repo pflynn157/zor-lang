@@ -300,6 +300,11 @@ procedure Parse_Block(block : in out AstBlock) is
             stmt := Create_Ast_Statement(AST_Var);
             Set_Name(stmt, name);
             Set_Data_Type(stmt, data_type);
+            Add_Statement(block, stmt);
+            
+            -- Create the assignment
+            stmt := Create_Ast_Statement(AST_Expr_Stmt);
+            Set_Name(stmt, name);
             Set_Expression(stmt, expr);
             Add_Statement(block, stmt);
             

@@ -8,6 +8,8 @@ with lex; use lex;
 with unwriter;
 with cpp_unwriter;
 
+with pass1;
+
 procedure Main is
 
     -- Command line control variables
@@ -55,6 +57,7 @@ begin
     
     if not output_lex then
         ast_file := Parse(To_String(input_file));
+        pass1.run_pass1(ast_file);
     end if;
 
     -- Print as dictated
