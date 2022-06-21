@@ -177,6 +177,14 @@ package AST is
     --
     function get_list_size(expr : AstExpression) return integer;
     function get_list_item(expr : AstExpression; index : integer) return AstExpression;
+    function get_lval(expr : AstExpression) return AstExpression;
+    function get_rval(expr : AstExpression) return AstExpression;
+    
+    --
+    -- Helper functions for statements
+    --
+    function get_type(stmt : AstStatement) return AstType;
+    function get_data_type(stmt : AstStatement) return DataType;
     
     --
     -- Helper functions for AstArg

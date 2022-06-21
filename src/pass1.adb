@@ -10,6 +10,7 @@ package body pass1 is
 -- Forward declarations
 --
 procedure step1(func : AstFunction);
+procedure step2(func : AstFunction);
 
 --
 -- Defintes the errors
@@ -19,7 +20,8 @@ type error_type is (
     P1_Redec,
     P1_Unknown_Dec,
     P1_Unknown_Struct_Dec,
-    P1_Unknown_Array_Dec
+    P1_Unknown_Array_Dec,
+    P1_INCP_Type
 );
 type error_array is array (0 .. 100) of error_type;
 error_list : error_array;
@@ -56,6 +58,7 @@ begin
                 when P1_Unknown_Dec => put_line("P1_UNKNOWN_DEC;");
                 when P1_Unknown_Struct_Dec => put_line("P1_UNKNOWN_STRUCT_DEC;");
                 when P1_Unknown_Array_Dec => put_line("P1_UNKNOWN_ARRAY_DEC;");
+                when P1_INCP_Type => put_line("P1_INCP_TYPE;");
                 when others => put_line("NONE;");
             end case;
         else
@@ -72,6 +75,9 @@ begin
                 when P1_Unknown_Array_Dec =>
                     put_line("Fatal: Unknown array declaration: " & to_string(name_list(i)));
                     
+                when P1_INCP_Type =>
+                    put_line("Fatal: Incompatible type in expression for: " & to_string(name_list(i)));
+                    
                 when others => put_line("Unknown error from pass 1: " & error_type'Image(error));
             end case;
         end if;
@@ -87,6 +93,7 @@ procedure run_pass1(file : in out AstFile) is
 begin
     for func of file.funcs loop
         step1(func);
+        step2(func);
     end loop;
 end run_pass1;
 
@@ -170,6 +177,101 @@ begin
         end case;
     end loop;
 end step1;
+
+--
+-- Step 2: Type analysis and fixing
+-- 1) All expressions should have an embedded type
+-- 2) Variables can ONLY be used in expressions of the same type
+--
+procedure step2(func : AstFunction) is
+    -- Define the type map type :-)
+    package type_map_vector is new ada.containers.indefinite_ordered_maps
+        ( key_type => Unbounded_String,
+          element_type => DataType );
+    use type_map_vector;
+    
+    -- Needed variables
+    type_map : map;
+    
+    -- A helper function for querying the type map
+    function is_type(name : Unbounded_String; query : DataType) return boolean is
+        src_type : DataType := type_map(name);
+    begin
+        if src_type = query then
+            return true;
+        else
+            return false;
+        end if;
+    end is_type;
+    
+    -- Scans an expression for proper variable usage
+    procedure scan_expression(expr : AstExpression; name : Unbounded_String) is
+    begin
+        case get_type(expr) is
+            -- Expressions
+            when AST_Expr_List => null;
+            when AST_Call_Expr => null;
+        
+            -- Operators
+            when AST_Assign
+                | AST_Add | AST_Sub | AST_Mul | AST_Div | AST_Mod
+                | AST_And | AST_Or | AST_Xor
+                | AST_Eq | AST_Ne
+                | AST_Gt | AST_Ge
+                | AST_Lt | AST_Le
+                | AST_Lg_And | AST_Lg_Or =>
+                    scan_expression(expr.lval.all, name);
+                    scan_expression(expr.rval.all, name);
+        
+            -- Literals
+            when AST_Id => null;
+            when AST_Array_Acc => null;
+            when AST_Struct_Acc => null;
+            
+            when AST_Int => null;
+            
+            when AST_String =>
+                if not is_type(name, Str) then
+                    add_error(P1_INCP_Type, name);
+                end if;
+            
+            when AST_Char =>
+                if not is_type(name, Char) then
+                    add_error(P1_INCP_Type, name);
+                end if;
+            
+            when AST_True | AST_False =>
+                if not is_type(name, Bool) then
+                    add_error(P1_INCP_Type, name);
+                end if;
+            
+            -- Blah...
+            when others => null;
+        end case;
+    end scan_expression;
+begin
+    -- Load any arguments
+    -- TODO
+    
+    -- Scan the statements
+    for statement of func.block.statements loop
+        case get_type(statement) is
+            when AST_Var | AST_Array | AST_Struct =>
+                type_map.include(get_name(statement), get_data_type(statement));
+                
+            when AST_Expr_Stmt =>
+                declare
+                    expr : AstExpression := get_expression(statement);
+                    lval : AstExpression := get_lval(expr);
+                    dest_name : Unbounded_String := get_name(lval);
+                begin
+                    scan_expression(expr, dest_name);
+                end;
+                
+            when others => null;
+        end case;
+    end loop;
+end step2;
 
 end pass1;  -- End package pass1
 

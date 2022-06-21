@@ -20,6 +20,29 @@ begin
     return expr.list(index).all;
 end get_list_item;
 
+function get_lval(expr : AstExpression) return AstExpression is
+begin
+    return expr.lval.all;
+end get_lval;
+
+function get_rval(expr : AstExpression) return AstExpression is
+begin
+    return expr.rval.all;
+end get_rval;
+
+--
+-- Helper functions for statements
+--
+function get_type(stmt : AstStatement) return AstType is
+begin
+    return stmt.ast_type;
+end get_type;
+
+function get_data_type(stmt : AstStatement) return DataType is
+begin
+    return stmt.data_type;
+end get_data_type;
+
 --
 -- Helper functions for AstArg
 --
