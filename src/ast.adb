@@ -18,6 +18,16 @@ begin
     return true;
 end Has_Expression;
 
+function get_expression(stmt : AstStatement) return AstExpression is
+begin
+    return stmt.expr;
+end get_expression;
+
+function get_type(expr : AstExpression) return AstType is
+begin
+    return expr.ast_type;
+end get_type;
+
 -- This function is local to the next two functions
 function Create_Expr_Obj(item : AstExpression) return AstExprObj is
     item_obj : AstExprObj := new AstExpression'(

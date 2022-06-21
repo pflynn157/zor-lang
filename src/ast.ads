@@ -172,6 +172,8 @@ package AST is
     -- Functions
     --
     function Has_Expression(stmt : AstStatement) return boolean;
+    function get_expression(stmt : AstStatement) return AstExpression;
+    function get_type(expr : AstExpression) return AstType;
     procedure Create_Binary_Op(op : in out AstExpression; lval, rval : AstExpression);
     procedure Set_Sub_Expr(op : in out AstExpression; expr : AstExpression);
     procedure Add_List_Item(op : in out AstExpression; item : AstExpression);
