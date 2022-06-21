@@ -16,6 +16,9 @@ procedure Main is
     output_lex, output_ast, testing : boolean := false;
     input_file : Unbounded_String;
     
+    -- Pass controls
+    run_pass1 : boolean := true;
+    
     procedure Lex_Test is
         t : Token;
     begin
@@ -48,6 +51,8 @@ begin
                 lang := UL_Cpp;
             elsif argument(i) = "--testing" then
                 testing := true;
+            elsif argument(i) = "--skip-pass1" then
+                run_pass1 := false;
             else
                 input_file := To_Unbounded_String(Argument(i));
             end if;
@@ -59,10 +64,12 @@ begin
     
     if not output_lex then
         ast_file := Parse(To_String(input_file));
-        pass1.run_pass1(ast_file);
         
-        if not pass1.evaluate_error1(testing) then
-            return;
+        if run_pass1 then
+            pass1.run_pass1(ast_file);
+            if not pass1.evaluate_error1(testing) then
+                return;
+            end if;
         end if;
     end if;
 

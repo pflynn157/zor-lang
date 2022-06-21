@@ -8,9 +8,48 @@ with Ada.Containers.Vectors;
 package body Ast is
 
 --
+-- Helper functions for expressions
+--
+function get_list_size(expr : AstExpression) return integer is
+begin
+    return expr.list_size - 1;
+end get_list_size;
+
+function get_list_item(expr : AstExpression; index : integer) return AstExpression is
+begin
+    return expr.list(index).all;
+end get_list_item;
+
+--
+-- Helper functions for AstArg
+--
+function get_name(arg : AstArg) return Unbounded_String is
+begin
+    return arg.name;
+end get_name;
+
+--
+-- Helper functions for functions
+--
+-- TODO: This is horrible
+function get_arg_size(func : AstFunction) return integer is
+    size : integer := 0;
+begin
+    for i in 0 .. (func.args.length - 1) loop
+        size := size + 1;
+    end loop;
+    return size - 1;
+end get_arg_size;
+
+function get_arg(func : AstFunction; index : integer) return AstArg is
+begin
+    return func.args(index);
+end get_arg;
+
+--
 -- Variable class functions
 --
-function Has_Expression(stmt : AstStatement) return boolean is
+function has_expression(stmt : AstStatement) return boolean is
 begin
     if stmt.expr.ast_type = AST_None then
         return false;
@@ -23,6 +62,11 @@ begin
     return stmt.expr;
 end get_expression;
 
+function get_sub_expression(expr : AstExpression) return AstExpression is
+begin
+    return expr.sub_expr.all;
+end get_sub_expression;
+
 function get_type(expr : AstExpression) return AstType is
 begin
     return expr.ast_type;
@@ -31,6 +75,11 @@ end get_type;
 function get_name(expr : AstExpression) return Unbounded_String is
 begin
     return expr.string_value;
+end get_name;
+
+function get_name(stmt : AstStatement) return unbounded_string is
+begin
+    return stmt.name;
 end get_name;
 
 -- This function is local to the next two functions

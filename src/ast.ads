@@ -168,13 +168,36 @@ package AST is
         funcs : AstFuncVector.Vector;
     end record;
     
-    --
+    ----------------------------
     -- Functions
+    ----------------------------
+    
     --
-    function Has_Expression(stmt : AstStatement) return boolean;
+    -- Helper functions for expressions
+    --
+    function get_list_size(expr : AstExpression) return integer;
+    function get_list_item(expr : AstExpression; index : integer) return AstExpression;
+    
+    --
+    -- Helper functions for AstArg
+    --
+    function get_name(arg : AstArg) return Unbounded_String;
+    
+    --
+    -- Helper functions for functions
+    --
+    function get_arg_size(func : AstFunction) return integer;
+    function get_arg(func : AstFunction; index : integer) return AstArg;
+    
+    --
+    -- Other helper functions
+    --
+    function has_expression(stmt : AstStatement) return boolean;
     function get_expression(stmt : AstStatement) return AstExpression;
+    function get_sub_expression(expr : AstExpression) return AstExpression;
     function get_type(expr : AstExpression) return AstType;
     function get_name(expr : AstExpression) return Unbounded_String;
+    function get_name(stmt : AstStatement) return unbounded_string;
     procedure Create_Binary_Op(op : in out AstExpression; lval, rval : AstExpression);
     procedure Set_Sub_Expr(op : in out AstExpression; expr : AstExpression);
     procedure Add_List_Item(op : in out AstExpression; item : AstExpression);
