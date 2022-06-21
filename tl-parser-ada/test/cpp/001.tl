@@ -1,0 +1,4 @@
+func main -> i32 is
+    println("Hello!");
+    return 0;
+end
