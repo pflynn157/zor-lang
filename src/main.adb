@@ -13,7 +13,7 @@ with pass1;
 procedure Main is
 
     -- Command line control variables
-    output_lex, output_ast : boolean := false;
+    output_lex, output_ast, testing : boolean := false;
     input_file : Unbounded_String;
     
     procedure Lex_Test is
@@ -46,6 +46,8 @@ begin
                 output_ast := true;
             elsif Argument(i) = "--output:cpp" then
                 lang := UL_Cpp;
+            elsif argument(i) = "--testing" then
+                testing := true;
             else
                 input_file := To_Unbounded_String(Argument(i));
             end if;
@@ -58,6 +60,10 @@ begin
     if not output_lex then
         ast_file := Parse(To_String(input_file));
         pass1.run_pass1(ast_file);
+        
+        if not pass1.evaluate_error1(testing) then
+            return;
+        end if;
     end if;
 
     -- Print as dictated

@@ -28,6 +28,11 @@ begin
     return expr.ast_type;
 end get_type;
 
+function get_name(expr : AstExpression) return Unbounded_String is
+begin
+    return expr.string_value;
+end get_name;
+
 -- This function is local to the next two functions
 function Create_Expr_Obj(item : AstExpression) return AstExprObj is
     item_obj : AstExprObj := new AstExpression'(

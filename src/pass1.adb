@@ -12,16 +12,49 @@ package body pass1 is
 procedure step1(func : AstFunction);
 
 --
+-- Defintes the errors
+--
+type error_type is (
+    P1_None,
+    P1_Redec,
+    P1_Unknown_Dec
+);
+error : error_type := P1_None;
+
+--
+-- Performs the error evaluation
+--
+function evaluate_error1(testing : boolean := false) return boolean is
+begin
+    if error = P1_None then
+        return true;
+    end if;
+    
+    if testing then
+        case error is
+            when P1_Redec => put_line("P1_REDEC");
+            when P1_Unknown_Dec => put_line("P1_UNKNOWN_DEC");
+            when others => null;
+        end case;
+    else
+        case error is
+            when P1_Redec => put_line("Fatal: Variable redeclaration.");
+            when P1_Unknown_Dec => put_line("Fatal: Unknown variable declaration.");
+            when others => null;
+        end case;
+    end if;
+    
+    return false;
+end evaluate_error1;
+
+--
 -- Entry point to pass 1
 --
 procedure run_pass1(file : in out AstFile) is
 begin
-    put_line("Running pass1 verifications...");
     for func of file.funcs loop
         step1(func);
     end loop;
-    put_line("Done");
-    new_line;
 end run_pass1;
 
 --
@@ -60,7 +93,11 @@ procedure step1(func : AstFunction) is
                     end if;
             
             -- Literals
-            when AST_Id => null;
+            when AST_Id =>
+                if not table.contains(get_name(expr)) then
+                    error := P1_Unknown_Dec;
+                end if;
+                
             when AST_Array_Acc => null;
             when AST_Struct_Acc => null;
             
@@ -74,7 +111,7 @@ begin
         case statement.ast_type is
             when AST_Var =>
                 if table.contains(statement.name) then
-                    put_line("Fatal: Redeclaration of variable " & to_string(statement.name));
+                    error := P1_Redec;
                     return;
                 else
                     table.append(statement.name);

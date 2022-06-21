@@ -10,6 +10,7 @@ with ast; use ast;
 --
 
 package pass1 is
+    function evaluate_error1(testing : boolean := false) return boolean;
     procedure run_pass1(file : in out AstFile);
 end pass1;
 
