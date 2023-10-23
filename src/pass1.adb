@@ -1,3 +1,8 @@
+--
+-- This software is licensed under BSD0 (public domain).
+-- Therefore, this software belongs to humanity.
+-- See COPYING for more info.
+--
 with ada.text_io;           use ada.text_io;
 with ada.strings.unbounded; use ada.strings.unbounded;
 with ada.containers;        use ada.containers;

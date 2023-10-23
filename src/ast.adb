@@ -1,3 +1,8 @@
+--
+-- This software is licensed under BSD0 (public domain).
+-- Therefore, this software belongs to humanity.
+-- See COPYING for more info.
+--
 with Ada.Text_IO;           use Ada.Text_IO;
 with Ada.Integer_Text_IO;   use Ada.Integer_Text_IO;
 with Ada.Strings;           use Ada.Strings;
